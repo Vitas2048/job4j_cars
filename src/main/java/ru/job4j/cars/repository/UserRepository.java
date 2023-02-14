@@ -7,76 +7,52 @@ import org.hibernate.query.Query;
 import ru.job4j.cars.model.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @AllArgsConstructor
 public class UserRepository {
-    private final SessionFactory sf;
+    private final CrudRepository crudRepository;
 
     public User create(User user) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.save(user);
-        session.getTransaction().commit();
-        session.close();
+        crudRepository.run(session -> session.persist(user));
         return user;
     }
 
-    public User update(User user) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        session.update(user);
-        session.getTransaction().commit();
-        session.close();
-        return user;
+    public void update(User user) {
+        crudRepository.run(session -> session.merge(user));
     }
 
     public void delete(int userId) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        User user = new User();
-        user.setId(userId);
-        session.delete(user);
-        session.getTransaction().commit();
-        session.close();
+        crudRepository.run("""
+                delete from user where id =:fId
+                """, Map.of("fId", userId));
     }
 
     public List<User> findAllOrderById() {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        List<User> users = session.createQuery("from User", User.class).list();
-        session.getTransaction().commit();
-        session.close();
-        return users;
+        return crudRepository.query("""
+                from User order by id asc
+                """, User.class);
     }
 
     public Optional<User> findById(int id) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        User res = session.get(User.class, id);
-        session.getTransaction().commit();
-        session.close();
-        return Optional.ofNullable(res);
+        return crudRepository.optional(
+                "from User where id = :fId", User.class,
+                Map.of("fId", id)
+        );
     }
 
     public List<User> findByLikeLogin(String key) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        Query<User> query = session.createQuery("from User as u where login like :fLogin", User.class)
-                .setParameter("fLogin", key);
-        List<User> res = query.getResultList();
-        session.getTransaction().commit();
-        session.close();
-        return res;
+        return crudRepository.query(
+                "from User where login like :fKey", User.class,
+                Map.of("fKey", "%" + key + "%")
+        );
     }
 
     public Optional<User> findByLogin(String login) {
-        Session session = sf.openSession();
-        session.beginTransaction();
-        Query<User> query = session.createQuery("from User as u where u.login=:fLogin", User.class)
-                .setParameter("fLogin", login);
-        Optional<User> res = query.uniqueResultOptional();
-        session.close();
-        return res;
+        return crudRepository.optional(
+                "from User where login = :fLogin", User.class,
+                Map.of("fLogin", login)
+        );
     }
 }
