@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,4 +33,14 @@ public class Post {
             inverseJoinColumns = { @JoinColumn(name = "user_id") }
     )
     private List<User> participates = new ArrayList<>();
+
+    private LocalDateTime created = LocalDateTime.now();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "file_id")
+    private List<File> pictures = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "mark_id")
+    private Mark mark;
 }
