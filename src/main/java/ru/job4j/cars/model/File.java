@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 
 @Data
-@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "files")

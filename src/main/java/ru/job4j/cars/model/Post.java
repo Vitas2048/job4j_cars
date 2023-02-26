@@ -20,8 +20,6 @@ public class Post {
 
     private String description;
 
-    private int autoUserId;
-
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "price_history_id")
     private List<PriceHistory> history;
@@ -35,6 +33,10 @@ public class Post {
     private List<User> participates = new ArrayList<>();
 
     private LocalDateTime created = LocalDateTime.now();
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "auto_user_id")
+    private User user;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "file_id")

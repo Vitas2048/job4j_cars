@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Entity
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "marks")
-@AllArgsConstructor
 public class Mark {
     @Id
     @EqualsAndHashCode.Include
