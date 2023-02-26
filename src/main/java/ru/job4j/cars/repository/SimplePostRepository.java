@@ -19,8 +19,8 @@ public class SimplePostRepository implements PostRepository {
 
     @Override
     public List<Post> findByLastDay() {
-        var now = Timestamp.from(Instant.from(LocalDateTime.now()));
-        var today = Timestamp.from(Instant.from(LocalDateTime.now().minusDays(1)));
+        var now = Timestamp.valueOf(LocalDateTime.now());
+        var today = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
         return crudRepository.query("from Post where created between :fNow and :fToday",
                 Post.class, Map.of("fNow", now, "fToday", today));
     }
@@ -33,5 +33,11 @@ public class SimplePostRepository implements PostRepository {
     @Override
     public List<Post> findByMark(Mark mark) {
         return crudRepository.query("from Post where where mark_id = :fMark", Post.class, Map.of("fMark", mark.getId()));
+    }
+
+    @Override
+    public Post create(Post post) {
+        crudRepository.run(session -> session.persist(post));
+        return post;
     }
 }
