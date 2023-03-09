@@ -7,9 +7,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import org.junit.jupiter.api.Test;
-import ru.job4j.cars.model.File;
-import ru.job4j.cars.model.Mark;
-import ru.job4j.cars.model.Post;
+import ru.job4j.cars.model.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,7 +26,14 @@ public class SimplePostRepositoryTest {
     public void whenFindByLastDay() throws Exception {
         PostRepository repository = new SimplePostRepository(crudRepository);
         Post post = new Post();
+        User user = new User();
         post.setCreated(LocalDateTime.now());
+        post.setDescription("1");
+        post.getHistory().add(new PriceHistory());
+        post.getParticipates().add(user);
+        post.setUser(user);
+        post.getPictures().add(new File());
+        post.setMark(new Mark());
         Post post1 = new Post();
         post1.setCreated(LocalDateTime.now().minusDays(20));
         repository.create(post);
@@ -42,6 +47,8 @@ public class SimplePostRepositoryTest {
         Mark mark = new Mark();
         mark.setName("Honda");
         Post post = new Post();
+//        User user = new User();
+//        post.getParticipates().add(user);
         post.setCreated(LocalDateTime.now());
         post.setMark(mark);
         repository.create(post);
@@ -53,6 +60,8 @@ public class SimplePostRepositoryTest {
         PostRepository repository = new SimplePostRepository(crudRepository);
         Post post = new Post();
         File file = new File();
+//        User user = new User();
+//        post.getParticipates().add(user);
         file.setPath("users/file.jpg");
         List<File> files = new ArrayList<>();
         files.add(file);

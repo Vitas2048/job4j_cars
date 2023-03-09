@@ -20,11 +20,11 @@ public class Post {
 
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "price_history_id")
-    private List<PriceHistory> history;
+    private List<PriceHistory> history = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(
             name = "participates",
             joinColumns = { @JoinColumn(name = "post_id") },
