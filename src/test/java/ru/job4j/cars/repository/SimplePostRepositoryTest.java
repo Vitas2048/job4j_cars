@@ -64,14 +64,12 @@ public class SimplePostRepositoryTest {
         PostRepository repository = new SimplePostRepository(crudRepository);
         Post post = new Post();
         File file = new File();
-//        User user = new User();
-//        post.getParticipates().add(user);
         file.setPath("users/file.jpg");
-        List<File> files = new ArrayList<>();
-        files.add(file);
         post.setCreated(LocalDateTime.now());
-        post.setPictures(files);
+        post.getPictures().add(file);
         Post post1 = new Post();
+        post.setDescription("1");
+        post1.setDescription("1");
         post.setCreated(LocalDateTime.now());
         repository.create(post);
         repository.create(post1);

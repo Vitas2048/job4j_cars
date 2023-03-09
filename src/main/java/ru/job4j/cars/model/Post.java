@@ -25,7 +25,7 @@ public class Post {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "price_history_id")
+    @JoinColumn(name = "auto_post_id")
     private List<PriceHistory> history = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
@@ -43,7 +43,7 @@ public class Post {
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id")
+    @JoinColumn(name = "post_id")
     private List<File> pictures = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
