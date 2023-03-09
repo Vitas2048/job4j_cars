@@ -47,13 +47,18 @@ public class UserController {
 
     @PostMapping("/login")
     public String loginUser(@ModelAttribute User user, Model model, HttpServletRequest request) {
-        var userOptional = userService.findByLoginAndPassword(user.getLogin(), user.getPassword());
-        if (userOptional.isEmpty()) {
-            model.addAttribute("error", "Почта или пароль введены неверно");
-            return "users/login";
+        try {
+            var userOptional = userService.findByLoginAndPassword(user.getLogin(), user.getPassword());
+            if (userOptional.isEmpty()) {
+                model.addAttribute("error", "Почта или пароль введены неверно");
+                return "users/login";
+            }
+            var session = request.getSession();
+            session.setAttribute("user", userOptional.get());
+        } catch (Exception e) {
+            model.addAttribute("message", "Неправильно введен логин или пароль");
+            return "errors/404";
         }
-        var session = request.getSession();
-        session.setAttribute("user", userOptional.get());
         return "redirect:/posts/list";
     }
 

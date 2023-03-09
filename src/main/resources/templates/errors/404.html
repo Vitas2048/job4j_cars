@@ -13,9 +13,18 @@
 </head>
 <body>
 <div class="container-fluid p-0">
-  <nav class="navbar" style="background-color: #e3f2fd;">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #DC143C;">
     <div class="container">
-      <a class="navbar-brand" href="/">Продажа Авто</a>
+      <a class="navbar-brand" href="/posts/list">Продажа Авто</a>
+      <div class="collapse navbar-collapse">
+        <div class="navbar-nav">
+          <a class="nav-link" href="/posts/list">Все объявления</a>
+        </div>
+      </div>
+      <div class="d-flex">
+        <a class="nav-link text-light me-3" style="" th:href="@{/users/register}">Регистрация</a>
+        <a class="nav-link text-light" th:href="@{/users/login}">Войти</a>
+      </div>
     </div>
   </nav>
   <div class="container mt-2">
