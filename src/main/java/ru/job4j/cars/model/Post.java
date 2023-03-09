@@ -1,17 +1,23 @@
 package ru.job4j.cars.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@AllArgsConstructor
 @Table(name = "auto_post")
+@NoArgsConstructor
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +26,33 @@ public class Post {
 
     private String description;
 
-    private int autoUserId;
+    private boolean sold;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "price_history_id")
-    private List<PriceHistory> history;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "auto_user_id")
+    private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_id")
+    private Car car;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private List<PriceHistory> history = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "auto_post_id")
+    private List<File> pictures = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mark_id")
+    private Mark mark;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "car_body_id")
+    private CarBody carBody;
+
+    private LocalDateTime created = LocalDateTime.now();
     @ManyToMany
     @JoinTable(
             name = "participates",
@@ -34,13 +61,5 @@ public class Post {
     )
     private List<User> participates = new ArrayList<>();
 
-    private LocalDateTime created = LocalDateTime.now();
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "file_id")
-    private List<File> pictures = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "mark_id")
-    private Mark mark;
+    private long price;
 }

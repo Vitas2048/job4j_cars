@@ -9,4 +9,6 @@ public interface CarService {
     Optional<Car> findById(int id);
 
     List<Car> findAll();
+
+    Optional<Car> save(Car car);
 }

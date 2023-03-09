@@ -11,4 +11,5 @@ public interface CarRepository {
 
     List<Car> findAll();
 
+    Optional<Car> save(Car car);
 }

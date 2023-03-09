@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -27,17 +28,82 @@ public class SimplePostRepository implements PostRepository {
 
     @Override
     public List<Post> findWithImg() {
-        return crudRepository.query("from Post where where file_id is not null", Post.class);
+        return crudRepository.query("from Post where file_id is not null", Post.class);
     }
 
     @Override
-    public List<Post> findByMark(Mark mark) {
-        return crudRepository.query("from Post where where mark_id = :fMark", Post.class, Map.of("fMark", mark.getId()));
+    public List<Post> findByMark(int markId) {
+        return crudRepository.query("""
+                from Post p
+                left join fetch p.user
+                left join fetch p.car
+                left join fetch p.mark m
+                left join fetch p.pictures
+                left join fetch p.carBody
+                where m.id=:fMarkId
+                """, Post.class, Map.of("fMarkId", markId));
     }
 
     @Override
     public Post create(Post post) {
         crudRepository.run(session -> session.persist(post));
         return post;
+    }
+
+    @Override
+    public List<Post> findAll() {
+        return crudRepository.query("""
+            from Post p
+            left join fetch p.user
+            left join fetch p.car
+            left join fetch p.mark
+            left join fetch p.pictures
+            left join fetch p.carBody
+            order by p.id
+            """, Post.class);
+    }
+
+    @Override
+    public Optional<Post> findById(int id) {
+        return crudRepository.optional("""
+                from Post p
+                left join fetch p.user
+                left join fetch p.car
+                left join fetch p.mark
+                left join fetch p.pictures
+                left join fetch p.carBody
+                where p.id=:fId
+                """, Post.class, Map.of("fId", id));
+    }
+
+    @Override
+    public void update(Post post) {
+        crudRepository.run(session -> session.merge(post));
+    }
+
+    @Override
+    public List<Post> findByMarkAndCarBody(int markId, int carBodyId) {
+        return crudRepository.query("""
+                from Post p
+                left join fetch p.user
+                left join fetch p.car
+                left join fetch p.mark m
+                left join fetch p.pictures
+                left join fetch p.carBody c
+                where c.id=:fCarBodyId and m.id=:fMarkId
+                """, Post.class, Map.of("fMarkId", markId, "fCarBodyId", carBodyId));
+    }
+
+    @Override
+    public List<Post> findByCarBodyId(int carBodyId) {
+        return crudRepository.query("""
+                from Post p
+                left join fetch p.user
+                left join fetch p.car
+                left join fetch p.mark
+                left join fetch p.pictures
+                left join fetch p.carBody c
+                where c.id=:fCarBodyId
+                """, Post.class, Map.of("fCarBodyId", carBodyId));
     }
 }

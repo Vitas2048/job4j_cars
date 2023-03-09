@@ -13,6 +13,5 @@
     <include file="scripts/003_ddl_create_participates.sql" relativeToChangelogFile="true"/>
     <include file="scripts/004_ddl_create_engine_car_driver_historydriver.sql" relativeToChangelogFile="true"/>
     <include file="scripts/007_ddl_create_files_marks.sql" relativeToChangelogFile="true"/>
-    <include file="scripts/update_008.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

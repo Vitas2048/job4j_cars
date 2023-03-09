@@ -5,5 +5,6 @@ create table marks (
 
 create table files (
     id serial primary key,
+    name varchar not null,
     path varchar unique  not null
 );

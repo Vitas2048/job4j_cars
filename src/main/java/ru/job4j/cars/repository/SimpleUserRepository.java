@@ -15,9 +15,13 @@ public class SimpleUserRepository implements UserRepository {
 
     private final CrudRepository crudRepository;
     @Override
-    public User create(User user) {
-        crudRepository.run(session -> session.persist(user));
-        return user;
+    public Optional<User> create(User user) {
+        try {
+            crudRepository.run(session -> session.persist(user));
+            return Optional.of(user);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
     @Override
     public void update(User user) {
@@ -59,6 +63,16 @@ public class SimpleUserRepository implements UserRepository {
         return crudRepository.optional(
                 "from User where login = :fLogin", User.class,
                 Map.of("fLogin", login)
+        );
+    }
+
+    @Override
+    public Optional<User> findByLoginAndPassword(String login, String password) {
+        return crudRepository.optional(
+                """
+                from User u  where u.login = :fLogin and u.password=:fPassword
+                """, User.class,
+                Map.of("fLogin", login, "fPassword", password)
         );
     }
 }

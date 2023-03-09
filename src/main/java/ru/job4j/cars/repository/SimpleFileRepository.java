@@ -23,4 +23,10 @@ public class SimpleFileRepository implements FileRepository {
     public Optional<File> findById(int id) {
         return crudRepository.optional("from File where id=:fId", File.class, Map.of("fId", id));
     }
+
+    @Override
+    public File save(File file) {
+        crudRepository.run(session -> session.persist(file));
+        return file;
+    }
 }

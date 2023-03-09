@@ -45,7 +45,7 @@ public class SimplePostRepositoryTest {
         post.setCreated(LocalDateTime.now());
         post.setMark(mark);
         repository.create(post);
-        assertThat(repository.findByMark(mark), is(post));
+        assertThat(repository.findByMark(mark.getId()), is(post));
     }
 
     @Test

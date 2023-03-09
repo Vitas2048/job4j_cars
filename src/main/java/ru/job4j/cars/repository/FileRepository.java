@@ -10,4 +10,6 @@ public interface FileRepository {
     List<File> findAll();
 
     Optional<File> findById(int id);
+
+    File save(File file);
 }

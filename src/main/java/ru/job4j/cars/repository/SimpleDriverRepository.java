@@ -15,11 +15,23 @@ public class SimpleDriverRepository implements DriverRepository {
 
     @Override
     public Optional<Driver> findById(int id) {
-        return crudRepository.optional("from Driver where id=:fId", Driver.class, Map.of("fId", id));
+        return crudRepository.optional("from Driver d left join fetch d.user where d.id=:fId",
+                Driver.class, Map.of("fId", id));
+    }
+
+    @Override
+    public Optional<Driver> findByUserId(int userId) {
+        return crudRepository.optional("from Driver d left join fetch d.user where user_id=:fId", Driver.class, Map.of("fId", userId));
     }
 
     @Override
     public List<Driver> findAll() {
         return crudRepository.query("from Driver", Driver.class);
+    }
+
+    @Override
+    public Driver create(Driver driver) {
+        crudRepository.run(session -> session.persist(driver));
+        return driver;
     }
 }

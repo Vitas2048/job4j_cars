@@ -15,11 +15,33 @@ public class SimpleCarRepository implements CarRepository {
 
     @Override
     public Optional<Car> findById(int id) {
-        return crudRepository.optional("from Car where id = :fId", Car.class, Map.of("fId", id));
+        return crudRepository.optional("""
+                from Car c
+                left join fetch c.engine 
+                left join fetch c.mark 
+                left join fetch c.drivers 
+                where c.id = :fId
+                """, Car.class, Map.of("fId", id));
     }
 
     @Override
     public List<Car> findAll() {
-        return crudRepository.query("from car", Car.class);
+        return crudRepository.query("""
+                from Car c
+                left join fetch c.engine
+                left join fetch c.mark
+                left join fetch c.drivers
+                left join fetch c.carBody
+                """, Car.class);
+    }
+
+    @Override
+    public Optional<Car> save(Car car) {
+        try {
+            crudRepository.run(session -> session.persist(car));
+            return Optional.of(car);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }

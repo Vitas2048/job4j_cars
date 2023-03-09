@@ -4,8 +4,10 @@ create table engine(
 
 create table car(
     id serial primary key,
-    engine_id int not null unique references engine(id)
+    engine_id int not null references engine(id),
+    mark_id int references marks(id)
 );
+
 create table driver(
     id serial primary key
 );
@@ -17,3 +19,4 @@ create table history_owner(
 );
 
 ALTER TABLE auto_post ADD COLUMN car_id int REFERENCES car(id);
+ALTER TABLE auto_post ADD COLUMN price int;
