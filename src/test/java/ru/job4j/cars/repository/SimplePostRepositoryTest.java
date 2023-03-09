@@ -18,45 +18,49 @@ import static org.hamcrest.Matchers.is;
 
 
 public class SimplePostRepositoryTest {
-    private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
-    private final SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-    private final CrudRepository crudRepository = new CrudRepository(sf);
+
+    private CrudRepository crudRepository() {
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
+        SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+        return new CrudRepository(sf);
+    }
 
     @Test
     public void whenFindByLastDay() throws Exception {
+        CrudRepository crudRepository = crudRepository();
         PostRepository repository = new SimplePostRepository(crudRepository);
         Post post = new Post();
-        User user = new User();
         post.setCreated(LocalDateTime.now());
         post.setDescription("1");
-        post.getHistory().add(new PriceHistory());
-        post.getParticipates().add(user);
-        post.setUser(user);
-        post.getPictures().add(new File());
-        post.setMark(new Mark());
         Post post1 = new Post();
+        post1.setDescription("1");
         post1.setCreated(LocalDateTime.now().minusDays(20));
         repository.create(post);
         repository.create(post1);
-        assertThat(repository.findByLastDay().get(0), is(post));
+        var found = repository.findByLastDay().get(0);
+        System.out.println(found);
+        assertThat(found, is(post));
     }
 
     @Test
     public void whenFindByMark() throws Exception {
+        CrudRepository crudRepository = crudRepository();
         PostRepository repository = new SimplePostRepository(crudRepository);
+        MarkRepository markRepository = new SimpleMarkRepository(crudRepository);
         Mark mark = new Mark();
         mark.setName("Honda");
+        markRepository.create(mark);
         Post post = new Post();
-//        User user = new User();
-//        post.getParticipates().add(user);
         post.setCreated(LocalDateTime.now());
         post.setMark(mark);
+        post.setDescription("1");
         repository.create(post);
         assertThat(repository.findByMark(mark), is(post));
     }
 
     @Test
     public void whenFindWithIMG() throws Exception {
+        CrudRepository crudRepository = crudRepository();
         PostRepository repository = new SimplePostRepository(crudRepository);
         Post post = new Post();
         File file = new File();

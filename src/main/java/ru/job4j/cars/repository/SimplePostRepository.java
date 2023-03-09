@@ -28,7 +28,7 @@ public class SimplePostRepository implements PostRepository {
                         left join fetch p.user
                         left join fetch p.pictures
                         left join fetch p.mark
-                        where created between :fNow and :fToday
+                        where p.created between :fNow and :fToday
                         """,
                 Post.class, Map.of("fNow", now, "fToday", today));
     }
