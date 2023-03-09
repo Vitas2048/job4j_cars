@@ -22,13 +22,27 @@ public class SimplePostRepository implements PostRepository {
     public List<Post> findByLastDay() {
         var now = Timestamp.valueOf(LocalDateTime.now());
         var today = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
-        return crudRepository.query("from Post where created between :fNow and :fToday",
+        return crudRepository.query("""
+                        from Post p
+                        left join fetch p.user
+                        left join fetch p.car
+                        left join fetch p.mark m
+                        left join fetch p.pictures
+                        left join fetch p.carBody
+                        where p.created between :fNow and :fToday""",
                 Post.class, Map.of("fNow", now, "fToday", today));
     }
 
     @Override
     public List<Post> findWithImg() {
-        return crudRepository.query("from Post where file_id is not null", Post.class);
+        return crudRepository.query("""
+                from Post p
+                left join fetch p.user
+                left join fetch p.car
+                left join fetch p.mark m
+                left join fetch p.pictures
+                left join fetch p.carBody
+                where p.pictures is not null""", Post.class);
     }
 
     @Override
