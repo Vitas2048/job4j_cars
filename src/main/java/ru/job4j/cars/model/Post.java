@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class Post {
     )
     private List<User> participates = new ArrayList<>();
 
-    private LocalDateTime created = LocalDateTime.now();
+    private Timestamp created = Timestamp.valueOf(LocalDateTime.now());
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "auto_user_id")

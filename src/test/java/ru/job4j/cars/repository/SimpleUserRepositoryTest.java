@@ -27,7 +27,7 @@ public class SimpleUserRepositoryTest {
         SimpleUserRepository repository = new SimpleUserRepository(crudRepository());
         User user = new User();
         user.setPassword("0000");
-        user.setLogin("admin");
+        user.setLogin("amin");
         ArrayList<User> users = new ArrayList<>(repository.findAllOrderById());
         repository.create(user);
         users.add(user);
@@ -42,10 +42,11 @@ public class SimpleUserRepositoryTest {
         SimpleUserRepository repository = new SimpleUserRepository(crudRepository());
         User user = new User();
         user.setPassword("0000");
-        user.setLogin("admin");
+        user.setLogin("log2");
         var before = repository.findAllOrderById();
         repository.create(user);
-        repository.delete(repository.findByLogin(user.getLogin()).get().getId());
+        System.out.println(user.getId());
+        repository.delete(user.getId());
         var after = repository.findAllOrderById();
         assertThat(before, is(after));
     }
@@ -55,13 +56,13 @@ public class SimpleUserRepositoryTest {
         SimpleUserRepository repository = new SimpleUserRepository(crudRepository());
         User user = new User();
         user.setPassword("0000");
-        user.setLogin("admin");
+        user.setLogin("admin2");
         User user1 = new User();
-        user.setPassword("0000");
-        user.setLogin("administrator");
+        user1.setPassword("0000");
+        user1.setLogin("administrator");
         User user2 = new User();
-        user.setPassword("0000");
-        user.setLogin("admins");
+        user2.setPassword("0000");
+        user2.setLogin("admins");
         List<User> expect = new ArrayList<>();
         expect.add(user);
         expect.add(user1);

@@ -14,4 +14,6 @@ public interface PostRepository {
     List<Post> findByMark(Mark mark);
 
     Post create(Post post);
+
+    void update(Post post);
 }

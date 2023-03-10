@@ -23,25 +23,16 @@ public class SimplePostRepository implements PostRepository {
         var today = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
         return crudRepository.query("""
                         from Post p
-                        left join fetch p.history
-                        left join fetch p.participates
-                        left join fetch p.user
-                        left join fetch p.pictures
-                        left join fetch p.mark
-                        where p.created between :fNow and :fToday
+                        where p.created between :fToday and :fNow
                         """,
-                Post.class, Map.of("fNow", now, "fToday", today));
+                Post.class, Map.of("fToday", today, "fNow", now));
     }
 
     @Override
     public List<Post> findWithImg() {
         return crudRepository.query("""
                 from Post p
-                left join fetch p.history
-                left join fetch p.participates
-                left join fetch p.user
                 left join fetch p.pictures m
-                left join fetch p.mark
                 where m is not null
                 """, Post.class);
     }
@@ -50,12 +41,8 @@ public class SimplePostRepository implements PostRepository {
     public List<Post> findByMark(Mark mark) {
         return crudRepository.query("""
                 from Post p
-                left join fetch p.history
-                left join fetch p.participates
-                left join fetch p.pictures
-                left join fetch p.user
                 left join fetch p.mark m
-                where mid = :fMark
+                where m.id = :fMark
                 """, Post.class, Map.of("fMark", mark.getId()));
     }
 
@@ -63,5 +50,10 @@ public class SimplePostRepository implements PostRepository {
     public Post create(Post post) {
         crudRepository.run(session -> session.persist(post));
         return post;
+    }
+
+    @Override
+    public void update(Post post) {
+        crudRepository.run(session -> session.merge(post));
     }
 }
