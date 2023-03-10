@@ -1,6 +1,5 @@
 package ru.job4j.cars.repository;
 
-import org.checkerframework.checker.units.qual.C;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -10,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import ru.job4j.cars.model.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
