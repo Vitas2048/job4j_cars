@@ -33,8 +33,10 @@ public class UserController {
         driver.setName(name);
         driver.setUser(user);
         driverService.create(driver);
-        if (userService.create(user).isEmpty()) {
-            model.addAttribute("message", "Ошибка регистрации");
+        try {
+            userService.create(user);
+        } catch (Exception e) {
+            model.addAttribute("message", "Данный логин уже используется");
             return "errors/404";
         }
         return "users/login";
@@ -49,10 +51,6 @@ public class UserController {
     public String loginUser(@ModelAttribute User user, Model model, HttpServletRequest request) {
         try {
             var userOptional = userService.findByLoginAndPassword(user.getLogin(), user.getPassword());
-            if (userOptional.isEmpty()) {
-                model.addAttribute("error", "Почта или пароль введены неверно");
-                return "users/login";
-            }
             var session = request.getSession();
             session.setAttribute("user", userOptional.get());
         } catch (Exception e) {

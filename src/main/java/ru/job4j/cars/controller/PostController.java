@@ -7,16 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.cars.config.PostConfig;
 import ru.job4j.cars.dto.FileDto;
-import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.model.*;
 import ru.job4j.cars.service.*;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/posts")
@@ -24,29 +19,27 @@ import java.util.stream.Collectors;
 public class PostController {
     private final PostService postService;
 
-    private final FileService fileService;
-
     private final CarService carService;
 
     private final DriverService driverService;
 
     private final EngineService engineService;
 
-    private final PriceHistoryService priceHistoryService;
-
     private final MarkService markService;
 
     private final CarBodyService carBodyService;
 
     @GetMapping("/list")
+
     public String getAll(Model model) {
-        var posts = postService.findAll().stream().map(p -> {
-            return PostConfig.postToDto(p, driverService, engineService);
-        }).toList();
-//        var posts = postService.findByCarBodyId(1).stream().map(p -> {
-//            return PostConfig.postToDto(p, driverService, engineService);
-//        }).toList();
-        model.addAttribute("posts", new HashSet<>(posts));
+        try {
+            var posts = postService.findAll().stream().map(p -> {
+                return PostConfig.postToDto(p, driverService, engineService);
+            }).toList();
+            model.addAttribute("posts", new HashSet<>(posts));
+        } catch (Exception e) {
+            return "redirect:/posts/create";
+        }
         model.addAttribute("carBodies", carBodyService.findAll());
         model.addAttribute("marks", markService.findAll());
         return "posts/list";
@@ -61,6 +54,7 @@ public class PostController {
     }
     @GetMapping("/create")
     public String getCreatedPage(Model model, @SessionAttribute User user) {
+        model.addAttribute("carBodies", carBodyService.findAll());
         model.addAttribute("marks", markService.findAll());
         model.addAttribute("engines", engineService.findAll());
         return "posts/create";
@@ -69,19 +63,23 @@ public class PostController {
     @PostMapping("/create")
     public String create(Model model, @ModelAttribute Post post,
                          @SessionAttribute User user, @RequestParam MultipartFile file,
-                         @RequestParam int autoMark, @RequestParam int carEngine, @RequestParam String carName) {
+                         @RequestParam int autoMark, @RequestParam int carEngine, @RequestParam int body,
+                         @RequestParam String carName) {
         var driver = driverService.findByUserId(user.getId()).get();
         var car = new Car();
         var mark = markService.findById(autoMark).get();
         var engine = engineService.findById(carEngine).get();
+        var carBody = carBodyService.findById(body).get();
         System.out.println(car.getId());
         car.setName(carName);
         car.setEngine(engine);
         car.setMark(mark);
+        car.setCarBody(carBody);
         post.setMark(car.getMark());
         post.setUser(user);
         post.setCar(car);
         post.getParticipates().add(user);
+        post.setCarBody(carBody);
         carService.save(car);
         car.getDrivers().add(driver);
         try {
