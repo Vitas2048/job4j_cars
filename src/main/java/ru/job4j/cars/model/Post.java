@@ -6,11 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -52,7 +51,7 @@ public class Post {
     @JoinColumn(name = "car_body_id")
     private CarBody carBody;
 
-    private LocalDateTime created = LocalDateTime.now();
+    private Timestamp created = Timestamp.valueOf(LocalDateTime.now());
     @ManyToMany
     @JoinTable(
             name = "participates",

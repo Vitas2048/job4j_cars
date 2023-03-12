@@ -19,7 +19,7 @@ public class SimpleMarkRepository implements MarkRepository {
     public Mark create(Mark mark) {
         crudRepository.run(session -> session.persist(mark));
         return mark;
-
+    }
     public List<Mark> findAll() {
         return crudRepository.query("from Mark", Mark.class);
     }

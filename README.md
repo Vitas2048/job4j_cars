@@ -112,6 +112,7 @@ post_id int REFERENCES auto_post(id)
 ```
 8. При помощи терминала перейдите в папку с исходным кодом и выполните команду:
 ``mvn spring-boot:run``
+![AppStart](img/start.png)
 9. Откройте браузер с URL: http://localhost:8080/
 
 ### Взаимодействие с приложением 
@@ -132,3 +133,5 @@ post_id int REFERENCES auto_post(id)
 * Только автор объявления может добавить фото или изменить статус объявления:
 ![Страница с описанием + автор](img/edit.png)
 ![Изменение статуса](img/sold.png)
+## Контакты
+vithag97@mail.ru<br>

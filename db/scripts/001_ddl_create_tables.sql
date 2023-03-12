@@ -9,7 +9,7 @@ name varchar
 );
 CREATE TABLE engine(
 id serial primary key,
-name varchar
+name varchar unique not null
 );
 CREATE TABLE marks (
 id serial primary key,
@@ -22,7 +22,8 @@ user_id int not null unique REFERENCES auto_user(id)
 );
 CREATE TABLE car(
 id serial primary key,
-engine_id int not null REFERENCES engine(id),
+name varchar,
+engine_id int REFERENCES engine(id),
 mark_id int REFERENCES marks(id),
 car_body_id int REFERENCES car_body(id)
 );
