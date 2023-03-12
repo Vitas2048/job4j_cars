@@ -49,11 +49,10 @@ public class SimplePostRepositoryTest {
         mark.setName("Honda");
         markRepository.create(mark);
         Post post = new Post();
+        post.setMark(mark);
         post.setDescription("1");
         repository.create(post);
-        post.setMark(mark);
-        repository.update(post);
-        var listFound = repository.findByMark(mark);
+        var listFound = repository.findByMark(mark.getId());
         assertThat(listFound.get(listFound.size() - 1), is(post));
     }
 
@@ -61,9 +60,12 @@ public class SimplePostRepositoryTest {
     public void whenFindWithIMG() throws Exception {
         CrudRepository crudRepository = crudRepository();
         PostRepository repository = new SimplePostRepository(crudRepository);
+        FileRepository fileRepository = new SimpleFileRepository(crudRepository);
         Post post = new Post();
         File file = new File();
+        file.setName("caption");
         file.setPath("users/file.jpg");
+        fileRepository.save(file);
         post.getPictures().add(file);
         Post post1 = new Post();
         post.setDescription("1");

@@ -112,6 +112,7 @@ post_id int REFERENCES auto_post(id)
 ```
 8. При помощи терминала перейдите в папку с исходным кодом и выполните команду:
 ``mvn spring-boot:run``
+![AppStart](img/start.png)
 9. Откройте браузер с URL: http://localhost:8080/
 
 ### Взаимодействие с приложением 

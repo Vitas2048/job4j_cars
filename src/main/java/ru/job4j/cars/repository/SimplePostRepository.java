@@ -24,12 +24,7 @@ public class SimplePostRepository implements PostRepository {
         var today = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
         return crudRepository.query("""
                         from Post p
-                        left join fetch p.user
-                        left join fetch p.car
-                        left join fetch p.mark m
-                        left join fetch p.pictures
-                        left join fetch p.carBody
-                        where p.created between :fNow and :fToday""",
+                        where p.created between :fToday and :fNow""",
                 Post.class, Map.of("fNow", now, "fToday", today));
     }
 
@@ -37,23 +32,15 @@ public class SimplePostRepository implements PostRepository {
     public List<Post> findWithImg() {
         return crudRepository.query("""
                 from Post p
-                left join fetch p.user
-                left join fetch p.car
-                left join fetch p.mark m
-                left join fetch p.pictures
-                left join fetch p.carBody
-                where p.pictures is not null""", Post.class);
+                left join fetch p.pictures m
+                where m is not null""", Post.class);
     }
 
     @Override
     public List<Post> findByMark(int markId) {
         return crudRepository.query("""
                 from Post p
-                left join fetch p.user
-                left join fetch p.car
                 left join fetch p.mark m
-                left join fetch p.pictures
-                left join fetch p.carBody
                 where m.id=:fMarkId
                 """, Post.class, Map.of("fMarkId", markId));
     }

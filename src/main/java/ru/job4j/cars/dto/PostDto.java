@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.job4j.cars.model.PriceHistory;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 @Data
@@ -22,7 +23,7 @@ public class PostDto {
 
     private List<Integer> photosId;
 
-    private LocalDateTime time;
+    private Timestamp time;
 
     private String markName;
 
