@@ -16,16 +16,18 @@ import static org.hamcrest.Matchers.is;
 
 public class SimpleUserRepositoryTest {
 
-    private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
-    private final SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-    private final CrudRepository crudRepository = new CrudRepository(sf);
+    private CrudRepository crudRepository() {
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
+        SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+        return new CrudRepository(sf);
+    }
 
     @Test
     public void whenCreateUser() throws Exception {
-        SimpleUserRepository repository = new SimpleUserRepository(crudRepository);
+        SimpleUserRepository repository = new SimpleUserRepository(crudRepository());
         User user = new User();
         user.setPassword("0000");
-        user.setLogin("admin");
+        user.setLogin("amin");
         ArrayList<User> users = new ArrayList<>(repository.findAllOrderById());
         repository.create(user);
         users.add(user);
@@ -37,29 +39,30 @@ public class SimpleUserRepositoryTest {
 
     @Test
     public void whenDeleteUser() throws Exception {
-        SimpleUserRepository repository = new SimpleUserRepository(crudRepository);
+        SimpleUserRepository repository = new SimpleUserRepository(crudRepository());
         User user = new User();
         user.setPassword("0000");
-        user.setLogin("admin");
+        user.setLogin("log2");
         var before = repository.findAllOrderById();
         repository.create(user);
-        repository.delete(repository.findByLogin(user.getLogin()).get().getId());
+        System.out.println(user.getId());
+        repository.delete(user.getId());
         var after = repository.findAllOrderById();
         assertThat(before, is(after));
     }
 
     @Test
     public void whenFindLike() throws Exception {
-        SimpleUserRepository repository = new SimpleUserRepository(crudRepository);
+        SimpleUserRepository repository = new SimpleUserRepository(crudRepository());
         User user = new User();
         user.setPassword("0000");
-        user.setLogin("admin");
+        user.setLogin("admin2");
         User user1 = new User();
-        user.setPassword("0000");
-        user.setLogin("administrator");
+        user1.setPassword("0000");
+        user1.setLogin("administrator");
         User user2 = new User();
-        user.setPassword("0000");
-        user.setLogin("admins");
+        user2.setPassword("0000");
+        user2.setLogin("admins");
         List<User> expect = new ArrayList<>();
         expect.add(user);
         expect.add(user1);
@@ -72,7 +75,7 @@ public class SimpleUserRepositoryTest {
 
     @Test
     public void whenUpdate() throws Exception {
-        SimpleUserRepository repository = new SimpleUserRepository(crudRepository);
+        SimpleUserRepository repository = new SimpleUserRepository(crudRepository());
         User user = new User();
         user.setLogin("Login");
         user.setPassword("1234");

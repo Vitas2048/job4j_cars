@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface MarkRepository {
 
+    Mark create(Mark mark);
+
     List<Mark> findAll();
 
     Optional<Mark> findById(int id);

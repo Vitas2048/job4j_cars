@@ -31,7 +31,7 @@ public class SimpleUserRepository implements UserRepository {
     @Override
     public void delete(int userId) {
         crudRepository.run("""
-                delete from user where id =:fId
+                delete from User where id =:fId
                 """, Map.of("fId", userId));
     }
 
