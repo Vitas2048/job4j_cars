@@ -11,28 +11,32 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SimpleCarRepository implements CarRepository {
 
-    private CrudRepository crudRepository;
-
-    @Override
-    public Optional<Car> findById(int id) {
-        return crudRepository.optional("""
+    public static final String FIND_BY_ID_QUERY = """
                 from Car c
                 left join fetch c.engine 
                 left join fetch c.mark 
                 left join fetch c.drivers 
                 where c.id = :fId
-                """, Car.class, Map.of("fId", id));
-    }
+                """;
 
-    @Override
-    public List<Car> findAll() {
-        return crudRepository.query("""
+    public static final String FIND_ALL_QUERY = """
                 from Car c
                 left join fetch c.engine
                 left join fetch c.mark
                 left join fetch c.drivers
                 left join fetch c.carBody
-                """, Car.class);
+                """;
+
+    private CrudRepository crudRepository;
+
+    @Override
+    public Optional<Car> findById(int id) {
+        return crudRepository.optional(FIND_BY_ID_QUERY, Car.class, Map.of("fId", id));
+    }
+
+    @Override
+    public List<Car> findAll() {
+        return crudRepository.query(FIND_ALL_QUERY, Car.class);
     }
 
     @Override

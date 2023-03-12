@@ -13,6 +13,19 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SimpleUserRepository implements UserRepository {
 
+    public static final String DELETE_QUERY = "delete from User where id =:fId";
+
+    public static final String FIND_ALL_ORDER_BY_ID_QUERY = "from User order by id asc";
+
+    public static final String FIND_BY_ID_QUERY = "from User where id = :fId";
+
+    public static final String FIND_BY_LIKE_LOGIN_QUERY = "from User where login like :fKey";
+
+    public static final String FIND_BY_LOGIN_QUERY = "from User where login = :fLogin";
+
+    public static final String FIND_BY_LOGIN_AND_PASSWORD_QUERY =
+            "from User u  where u.login = :fLogin and u.password=:fPassword";
+
     private final CrudRepository crudRepository;
     @Override
     public Optional<User> create(User user) {
@@ -30,49 +43,38 @@ public class SimpleUserRepository implements UserRepository {
 
     @Override
     public void delete(int userId) {
-        crudRepository.run("""
-                delete from User where id =:fId
-                """, Map.of("fId", userId));
+        crudRepository.run(DELETE_QUERY, Map.of("fId", userId));
     }
 
     @Override
     public List<User> findAllOrderById() {
-        return crudRepository.query("""
-                from User order by id asc
-                """, User.class);
+        return crudRepository.query(FIND_ALL_ORDER_BY_ID_QUERY, User.class);
     }
 
     @Override
     public Optional<User> findById(int id) {
-        return crudRepository.optional(
-                "from User where id = :fId", User.class,
-                Map.of("fId", id)
+        return crudRepository.optional(FIND_BY_ID_QUERY, User.class, Map.of("fId", id)
         );
     }
 
     @Override
     public List<User> findByLikeLogin(String key) {
-        return crudRepository.query(
-                "from User where login like :fKey", User.class,
-                Map.of("fKey", "%" + key + "%")
-        );
+        return crudRepository.query(FIND_BY_LIKE_LOGIN_QUERY, User.class, Map.of("fKey", "%" + key + "%"));
     }
 
     @Override
     public Optional<User> findByLogin(String login) {
-        return crudRepository.optional(
-                "from User where login = :fLogin", User.class,
-                Map.of("fLogin", login)
-        );
+        return crudRepository.optional(FIND_BY_LOGIN_QUERY, User.class, Map.of("fLogin", login));
     }
 
     @Override
     public Optional<User> findByLoginAndPassword(String login, String password) {
-        return crudRepository.optional(
-                """
-                from User u  where u.login = :fLogin and u.password=:fPassword
-                """, User.class,
-                Map.of("fLogin", login, "fPassword", password)
-        );
+        try {
+            var user = crudRepository.optional(FIND_BY_LOGIN_AND_PASSWORD_QUERY,
+                    User.class, Map.of("fLogin", login, "fPassword", password));
+            return user;
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }

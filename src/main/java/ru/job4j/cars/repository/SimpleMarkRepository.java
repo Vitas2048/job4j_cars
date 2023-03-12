@@ -13,19 +13,23 @@ import java.util.Optional;
 @Repository
 public class SimpleMarkRepository implements MarkRepository {
 
+    public static final String FIND_BY_ID_QUERY = "from Mark where id=:fId";
+
+    public static final String FIND_ALL_QUERY = "from Mark";
+
     private CrudRepository crudRepository;
 
     @Override
     public Mark create(Mark mark) {
         crudRepository.run(session -> session.persist(mark));
         return mark;
-
+    }
     public List<Mark> findAll() {
-        return crudRepository.query("from Mark", Mark.class);
+        return crudRepository.query(FIND_ALL_QUERY, Mark.class);
     }
 
     @Override
     public Optional<Mark> findById(int id) {
-        return crudRepository.optional("from Mark where id=:fId", Mark.class, Map.of("fId", id));
+        return crudRepository.optional(FIND_BY_ID_QUERY, Mark.class, Map.of("fId", id));
     }
 }

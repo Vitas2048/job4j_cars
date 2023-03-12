@@ -10,8 +10,10 @@ import ru.job4j.cars.dto.FileDto;
 import ru.job4j.cars.model.*;
 import ru.job4j.cars.service.*;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/posts")
@@ -32,14 +34,8 @@ public class PostController {
     @GetMapping("/list")
 
     public String getAll(Model model) {
-        try {
-            var posts = postService.findAll().stream().map(p -> {
-                return PostConfig.postToDto(p, driverService, engineService);
-            }).toList();
-            model.addAttribute("posts", new HashSet<>(posts));
-        } catch (Exception e) {
-            return "redirect:/posts/create";
-        }
+        var posts = postService.toDtoSet(postService.findAll());
+        model.addAttribute("posts", posts);
         model.addAttribute("carBodies", carBodyService.findAll());
         model.addAttribute("marks", markService.findAll());
         return "posts/list";
@@ -64,7 +60,7 @@ public class PostController {
     public String create(Model model, @ModelAttribute Post post,
                          @SessionAttribute User user, @RequestParam MultipartFile file,
                          @RequestParam int autoMark, @RequestParam int carEngine, @RequestParam int body,
-                         @RequestParam String carName) {
+                         @RequestParam String carName) throws IOException {
         var driver = driverService.findByUserId(user.getId()).get();
         var car = new Car();
         var mark = markService.findById(autoMark).get();
@@ -82,13 +78,8 @@ public class PostController {
         post.setCarBody(carBody);
         carService.save(car);
         car.getDrivers().add(driver);
-        try {
-            postService.save(post, new FileDto(file.getOriginalFilename(), file.getBytes()));
-            return "posts/list";
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
-            return "errors/404";
-        }
+        postService.save(post, new FileDto(file.getOriginalFilename(), file.getBytes()));
+        return "posts/list";
     }
 
     @PostMapping("filter")
@@ -123,14 +114,9 @@ public class PostController {
     }
 
     @PostMapping("/addPhoto/{id}")
-    public String addPhoto(@PathVariable int id, Model model, @RequestParam MultipartFile file) {
+    public String addPhoto(@PathVariable int id, Model model, @RequestParam MultipartFile file) throws IOException {
         var post = postService.findById(id).get();
-        try {
-            postService.updateWithFile(post, new FileDto(file.getOriginalFilename(), file.getBytes()));
-        } catch (Exception exception) {
-            model.addAttribute("message", exception.getMessage());
-            return "errors/404";
-        }
+        postService.updateWithFile(post, new FileDto(file.getOriginalFilename(), file.getBytes()));
         return "redirect:/posts/look/{id}";
     }
 }

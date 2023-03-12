@@ -13,15 +13,18 @@ import java.util.Optional;
 @Repository
 public class SimplePriceHistoryRepository implements PriceHistoryRepository {
 
+    public static final String FIND_BY_ID_QUERY = "from PriceHistory where id=:fId";
+
+    public static final String FIND_ALL_QUERY = "from PriceHistory";
     private CrudRepository crudRepository;
 
     @Override
     public Optional<PriceHistory> findById(int id) {
-        return crudRepository.optional("from PriceHistory where id=:fId", PriceHistory.class, Map.of("fId", id));
+        return crudRepository.optional(FIND_BY_ID_QUERY, PriceHistory.class, Map.of("fId", id));
     }
 
     @Override
     public List<PriceHistory> findAll() {
-        return crudRepository.query("from PriceHistory", PriceHistory.class);
+        return crudRepository.query(FIND_ALL_QUERY, PriceHistory.class);
     }
 }

@@ -7,6 +7,7 @@ import ru.job4j.cars.model.Post;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface PostService {
 
@@ -31,4 +32,6 @@ public interface PostService {
     List<Post> findByMarkAndCarBody(int markId, int carBodyId);
 
     List<Post> findByCarBodyId(int carBodyId);
+
+    Set<PostDto> toDtoSet(List<Post> posts);
 }

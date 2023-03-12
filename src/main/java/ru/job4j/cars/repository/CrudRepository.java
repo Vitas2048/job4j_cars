@@ -61,6 +61,7 @@ public class CrudRepository {
         return tx(command);
     }
 
+
     public <T> T tx(Function<Session, T> command) {
         var session = sf.openSession();
         try (session) {

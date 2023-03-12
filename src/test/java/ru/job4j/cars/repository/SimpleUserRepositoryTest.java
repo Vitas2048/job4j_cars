@@ -77,11 +77,11 @@ public class SimpleUserRepositoryTest {
     public void whenUpdate() throws Exception {
         SimpleUserRepository repository = new SimpleUserRepository(crudRepository());
         User user = new User();
-        user.setLogin("Login");
+        user.setLogin("Login22");
         user.setPassword("1234");
         repository.create(user);
         user.setPassword("0000");
         repository.update(user);
-        assertThat(user, is(repository.findByLogin("Login").get()));
+        assertThat(user, is(repository.findByLogin("Login22").get()));
     }
 }

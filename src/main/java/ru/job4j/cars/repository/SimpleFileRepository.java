@@ -12,16 +12,21 @@ import java.util.Optional;
 @AllArgsConstructor
 @Repository
 public class SimpleFileRepository implements FileRepository {
+
+    public static final String FIND_BY_ID_QUERY = "from File where id=:fId";
+
+    public static final String FIND_ALL_QUERY = "from File";
+
     private CrudRepository crudRepository;
 
     @Override
     public List<File> findAll() {
-        return crudRepository.query("from File", File.class);
+        return crudRepository.query(FIND_ALL_QUERY, File.class);
     }
 
     @Override
     public Optional<File> findById(int id) {
-        return crudRepository.optional("from File where id=:fId", File.class, Map.of("fId", id));
+        return crudRepository.optional(FIND_BY_ID_QUERY, File.class, Map.of("fId", id));
     }
 
     @Override

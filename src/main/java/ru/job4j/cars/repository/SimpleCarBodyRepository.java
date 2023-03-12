@@ -12,16 +12,20 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SimpleCarBodyRepository implements CarBodyRepository {
 
+    private static final String FIND_BY_ID_QUERY = "from CarBody where id=:fId";
+
+    private static final String QUERY = "from CarBody";
+
     private CrudRepository crudRepository;
 
 
     @Override
     public Optional<CarBody> findById(int id) {
-        return crudRepository.optional("from CarBody where id=:fId", CarBody.class, Map.of("fId", id));
+        return crudRepository.optional(FIND_BY_ID_QUERY, CarBody.class, Map.of("fId", id));
     }
 
     @Override
     public List<CarBody> findAll() {
-        return crudRepository.query("from CarBody", CarBody.class);
+        return crudRepository.query(QUERY, CarBody.class);
     }
 }

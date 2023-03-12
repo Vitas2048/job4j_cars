@@ -1,6 +1,7 @@
 package ru.job4j.cars.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/users")
 @AllArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -33,11 +35,9 @@ public class UserController {
         driver.setName(name);
         driver.setUser(user);
         driverService.create(driver);
-        try {
-            userService.create(user);
-        } catch (Exception e) {
+        if (userService.create(user).isEmpty()) {
             model.addAttribute("message", "Данный логин уже используется");
-            return "errors/404";
+            return "errors/error";
         }
         return "users/login";
     }
@@ -51,11 +51,14 @@ public class UserController {
     public String loginUser(@ModelAttribute User user, Model model, HttpServletRequest request) {
         try {
             var userOptional = userService.findByLoginAndPassword(user.getLogin(), user.getPassword());
+            if (userOptional.isEmpty()) {
+                model.addAttribute("message", "Неправильно введен логин или пароль");
+                return "errors/error";
+            }
             var session = request.getSession();
             session.setAttribute("user", userOptional.get());
         } catch (Exception e) {
-            model.addAttribute("message", "Неправильно введен логин или пароль");
-            return "errors/404";
+            log.error(e.getMessage());
         }
         return "redirect:/posts/list";
     }

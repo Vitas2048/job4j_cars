@@ -43,17 +43,37 @@ public class SimplePostRepositoryTest {
     @Test
     public void whenFindByMark() throws Exception {
         CrudRepository crudRepository = crudRepository();
-        PostRepository repository = new SimplePostRepository(crudRepository());
+        PostRepository repository = new SimplePostRepository(crudRepository);
         MarkRepository markRepository = new SimpleMarkRepository(crudRepository);
-        Mark mark = new Mark();
-        mark.setName("Honda");
-        markRepository.create(mark);
+        FileRepository fileRepository = new SimpleFileRepository(crudRepository);
+        UserRepository userRepository = new SimpleUserRepository(crudRepository);
+        CarBodyRepository carBodyRepository = new SimpleCarBodyRepository(crudRepository);
+        CarRepository carRepository = new SimpleCarRepository(crudRepository);
+
         Post post = new Post();
+        var mark = markRepository.findById(1).get();
+        Car car = new Car();
+        File file = new File();
+        User user = new User();
+
+        file.setName("caption1");
+        file.setPath("users/file1.jpg");
+        user.setLogin("Login");
+        user.setPassword("1234");
+
+        fileRepository.save(file);
+        carRepository.save(car);
+        userRepository.create(user);
+
+        post.setCar(car);
+        post.getPictures().add(file);
+        post.setUser(user);
         post.setDescription("1");
-        repository.create(post);
         post.setMark(mark);
-        repository.update(post);
-        var listFound = repository.findByMark(mark);
+        post.setCarBody(carBodyRepository.findById(1).get());
+
+        repository.create(post);
+        var listFound = repository.findByMark(mark.getId());
         assertThat(listFound.get(listFound.size() - 1), is(post));
     }
 
@@ -61,9 +81,12 @@ public class SimplePostRepositoryTest {
     public void whenFindWithIMG() throws Exception {
         CrudRepository crudRepository = crudRepository();
         PostRepository repository = new SimplePostRepository(crudRepository);
+        FileRepository fileRepository = new SimpleFileRepository(crudRepository);
         Post post = new Post();
         File file = new File();
+        file.setName("caption");
         file.setPath("users/file.jpg");
+        fileRepository.save(file);
         post.getPictures().add(file);
         Post post1 = new Post();
         post.setDescription("1");

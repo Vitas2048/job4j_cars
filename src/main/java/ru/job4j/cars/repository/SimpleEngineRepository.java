@@ -12,15 +12,19 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SimpleEngineRepository implements EngineRepository {
 
+    public static final String FIND_BY_ID_QUERY = "from Engine where id=:fId";
+
+    public static final String FIND_ALL_QUERY = "from Engine";
+
     private CrudRepository crudRepository;
 
     @Override
     public Optional<Engine> findById(int id) {
-        return crudRepository.optional("from Engine where id=:fId", Engine.class, Map.of("fId", id));
+        return crudRepository.optional(FIND_BY_ID_QUERY, Engine.class, Map.of("fId", id));
     }
 
     @Override
     public List<Engine> findAll() {
-        return crudRepository.query("from Engine", Engine.class);
+        return crudRepository.query(FIND_ALL_QUERY, Engine.class);
     }
 }
